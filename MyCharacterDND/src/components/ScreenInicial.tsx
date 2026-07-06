@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
 
 import { usePersonajesStore } from "@/store/personajeStore";
-import { useRouter } from 'expo-router';
+import { router, useRouter } from 'expo-router';
 
 export default function PersonajeScreen(){
 
@@ -40,7 +40,8 @@ export default function PersonajeScreen(){
           {personajes.map((personaje) => (
             <View key={personaje.id} style={estilos.tarjeta}>
               <TouchableOpacity
-              onPress={() => router.push(`/plantilla/${personaje.id}`)}>
+              onPress={() => 
+              router.push(`/plantilla/${personaje.id}`)}>
                 
                 <Text style={estilos.nombrePersonaje}>{personaje.nombre}</Text>
                 <Text style={estilos.detallesPersonaje}>
