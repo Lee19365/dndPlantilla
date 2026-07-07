@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TextInput } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, ScrollView,TouchableOpacity } from 'react-native';
 
 import { usePersonajesStore } from "@/store/personajeStore";
-import { personajeDND } from '@/hooks/tipos';
+import { personajeDND,DNDBonificadores } from '@/hooks/tipos';
 
 
 interface ScreenPlantillaProps {
@@ -12,7 +12,7 @@ interface ScreenPlantillaProps {
 export default function ScreenPlantilla ({ id }: ScreenPlantillaProps){
     
     //traemos los datos
-    const {personajes} = usePersonajesStore();
+    const {personajes,actualizarPersonaje} = usePersonajesStore();
     const encontrarPersonaje = personajes.find(personaje => personaje.id === id);  //traemos el personaje que coincida con el id recibido por props
     const [personaje, setPersonaje] = useState <personajeDND | null> (encontrarPersonaje ?? null);
     //si no encuentra el personaje mostramos un mensaje de error
@@ -25,6 +25,37 @@ export default function ScreenPlantilla ({ id }: ScreenPlantillaProps){
         )
     
     }
+    const actualizar= ()=>{ 
+        actualizarPersonaje(personaje);
+    };
+
+
+    const bonos =()=>{
+        return(
+        Object.entries(personaje.bonificadores).map(([clave,valor])=>{
+        const atributo = clave as keyof DNDBonificadores;
+
+            return (
+        <View key={clave}>
+            <Text>{clave}</Text>
+
+            <TextInput
+                value={String(personaje.bonificadores[atributo] ?? "")}
+                onChangeText={(texto) =>
+                    setPersonaje({
+                        ...personaje,
+                        bonificadores: {
+                            ...personaje.bonificadores,
+                            [atributo]: Number(texto),
+                        },
+                    })
+                }
+            />
+        </View>
+    );
+
+        })
+    )}
     
     
     return(
@@ -55,7 +86,23 @@ export default function ScreenPlantilla ({ id }: ScreenPlantillaProps){
                     />
 
                 </View>
-
+            
+            <ScrollView>
+                
+                <View>
+                    
+                
+                    {bonos()}
+                    
+                    
+                </View>
+            </ScrollView>
+            {/* Botón inferior para guardar */}
+                <View style={estilos.footer}>
+                    <TouchableOpacity style={estilos.botonguardar} onPress={actualizar}>
+                    <Text>Guardar datos</Text>
+                    </TouchableOpacity>
+                </View>
 
         </SafeAreaView>
     )
@@ -73,7 +120,17 @@ const estilos = StyleSheet.create({
         backgroundColor: '#fff', 
         borderBottomWidth: 1,
         borderBottomColor: '#eee' },
-        infoPrincipal: { fontSize: 20, 
+    infoPrincipal: { fontSize: 20, 
         fontWeight: 'bold', 
         marginBottom: 5 },
+    bonificadores :{backgroundColor: '#8b7373', padding: 16, borderRadius: 8, alignItems: 'center'
+    
+        
+
+    },
+    footer:{ padding: 16, backgroundColor: '#fff' 
+
+    },
+    botonguardar:{backgroundColor: '#800000', padding: 16, borderRadius: 8, alignItems: 'center'}
+    
 });
