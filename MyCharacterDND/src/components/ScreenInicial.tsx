@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
-
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePersonajesStore } from "@/store/personajeStore";
 import { router, useRouter } from 'expo-router';
 

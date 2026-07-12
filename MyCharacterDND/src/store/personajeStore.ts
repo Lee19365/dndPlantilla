@@ -1,6 +1,6 @@
 // personajesStore.ts
 import { create } from 'zustand';
-import { DNDBonificadores, personajeDND } from '../hooks/tipos'; // Importamos tu interfaz
+import { DNDBonificadores, DNDPlantilla, personajeDND,Armas } from '../hooks/tipos'; // Importamos tu interfaz
 import ScreenPlantilla from '@/components/ScrenPlantilla';
 
 // Definimos qué datos y qué funciones va a tener nuestro Store
@@ -9,7 +9,9 @@ interface PersonajesState {
   crearPersonaje: (nombre: string, clase: string, raza: string) => void;
   eliminarPersonaje: (id: string) => void;
   actualizarPersonaje: (personajeActualizado: personajeDND) => void;
+  
 }
+
 export const BonificadoresIniciales: DNDBonificadores={
       Fuerza:0,
     
@@ -46,12 +48,20 @@ export const BonificadoresIniciales: DNDBonificadores={
     //-----------------otros-----------------------------------------------
     BPC:0, //bonificacion por experiencia 
     };
-
+export const infoDND: DNDPlantilla={
+  ClaseArmadura:0,
+    Iniciativa:0,
+    Velocidad:0,
+    PuntosGolpe:0,
+    DadosGolpe:'1d6',
+    PuntosGolpeTemp:0
+    
+}
 export const usePersonajesStore = create<PersonajesState>((set) => ({
   // 1. Estado inicial: empezamos con dos personajes de prueba
   personajes: [
-    { id: '1', nombre: 'Grog', clase: 'Bárbaro', raza: 'Goliath', nivel: 1, bonificadores: {}, plantilla: {}, armas: [] },
-    { id: '2', nombre: 'Jester', clase: 'Clérigo', raza: 'Tiefling', nivel: 3, bonificadores: {}, plantilla: {}, armas: [] },
+    { id: '1', nombre: 'Grog', clase: 'Bárbaro', raza: 'Goliath', nivel: 1, bonificadores: BonificadoresIniciales, plantilla: infoDND, armas: [] },
+    { id: '2', nombre: 'Jester', clase: 'Clérigo', raza: 'Tiefling', nivel: 3, bonificadores: BonificadoresIniciales, plantilla: infoDND, armas: [] },
   ],
   
   // 2. Función para crear uno nuevo
@@ -64,15 +74,18 @@ export const usePersonajesStore = create<PersonajesState>((set) => ({
       raza,
       nivel: 1, // Todos empiezan en nivel 1 por defecto
       bonificadores: BonificadoresIniciales,
-      
-      plantilla: {},
+      plantilla: infoDND,
       armas: [],
 
       
     };
+
     
     return { personajes: [...state.personajes, nuevo] }; // Agrega el nuevo a la lista existente
   }),
+  
+  
+
   actualizarPersonaje: (personajeActualizado) =>
   set((state) => ({
     personajes: state.personajes.map((p) =>

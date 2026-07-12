@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, ScrollView,TouchableOpacity } from 'react-native';
-
+import { StyleSheet, Text, View, TextInput, ScrollView,TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePersonajesStore } from "@/store/personajeStore";
-import { personajeDND,DNDBonificadores } from '@/hooks/tipos';
+import { personajeDND,DNDBonificadores,DNDPlantilla,Armas } from '@/hooks/tipos';
 
 
 interface ScreenPlantillaProps {
@@ -29,7 +29,29 @@ export default function ScreenPlantilla ({ id }: ScreenPlantillaProps){
         actualizarPersonaje(personaje);
     };
 
+    const infoP=() =>{
+        return(
+            Object.entries(personaje.plantilla).map(([clave,valor])=>{
+                const atributo = clave as keyof DNDPlantilla;
+                return(
 
+                    <View key={clave}>
+                        <Text>{clave}</Text>
+                        <TextInput
+                        style={estilos.infoPlantilla}
+                        value={String(personaje.plantilla[atributo]?? " ")}
+                        onChangeText={(texto)=>setPersonaje({
+                            ...personaje,plantilla:{...personaje.plantilla, [atributo]:Number(texto)}})}
+                        
+                        />
+                        
+                    </View>
+                )
+            }
+
+            )
+        )
+    }
     const bonos =()=>{
         return(
         Object.entries(personaje.bonificadores).map(([clave,valor])=>{
@@ -40,6 +62,7 @@ export default function ScreenPlantilla ({ id }: ScreenPlantillaProps){
             <Text>{clave}</Text>
 
             <TextInput
+                style={estilos.bonificadores}
                 value={String(personaje.bonificadores[atributo] ?? "")}
                 onChangeText={(texto) =>
                     setPersonaje({
@@ -56,11 +79,94 @@ export default function ScreenPlantilla ({ id }: ScreenPlantillaProps){
 
         })
     )}
+    const armas =()=> {
+        return(
+            <View style={estilos.contenedorArmas}>
+
+                {personaje.armas.map((arma, index) => (
+                    
+                
+                    <View style={estilos.contenedorArmas} key ={index}>
+                    <TextInput
+                    style={estilos.infoArma}
+                    
+                    value={arma.NombreArma}
+                    onChangeText={(texto) =>
+                    setPersonaje({
+                        ...personaje,
+                        armas: personaje.armas.map((a, i) =>
+                        i === index
+                            ? { ...a, NombreArma: texto }
+                            : a
+                        )
+                    })
+                    }
+                />
+                 {/*Bonificadores---------------------------------------------------------- */}
+
+                <TextInput 
+                style={estilos.infoArma}
+                value={String(arma.Bonificador)}
+                onChangeText={(texto)=>setPersonaje({
+                    ...personaje,armas:personaje.armas.map((a,i)=>
+                    i===index
+                        ?{...a,Bonificador:Number(texto)}:a
+                    )
+                })}
+                />
+                {/*DAÑO---------------------------------------------------------- */}
+                <TextInput
+                    style={estilos.infoArma}
+                    
+                    value={arma.Daño}
+                    onChangeText={(texto) =>
+                    setPersonaje({
+                        ...personaje,
+                        armas: personaje.armas.map((a, i) =>
+                        i === index
+                            ? { ...a, Daño: texto }
+                            : a
+                        )
+                    })
+                    }
+                />
+                {/*cantidad---------------------------------------------------------- */}
+                <TextInput 
+                style={estilos.infoArma}
+                value={String(arma.Cantidad)}
+                onChangeText={(texto)=>setPersonaje({
+                    ...personaje,armas:personaje.armas.map((a,i)=>
+                    i===index
+                        ?{...a,Cantidad:Number(texto)}:a
+                    )
+                })}
+                />
+                </View>
+                
+                
+                )
+                
+                )}
+            </View>
+        )
+    }
+    {/*Agregar Arma---------------------------------------------------------- */}
+    const agregarArma = () => {
+    const armaVacia: Armas = {
+        NombreArma: "espada",
+        Bonificador: 0,
+        Daño:'1d6',
+        Cantidad:0
+    };
     
-    
+    setPersonaje({
+            ...personaje,
+            armas: [...personaje.armas, armaVacia]
+        });
+    };
     return(
         
-        <SafeAreaView>
+        <SafeAreaView style={estilos.contenedorG}>
             {/*Encabezado*/}
             <View style={estilos.header}>
             {/*le decimos que sera una caja de texto editable */}
@@ -82,21 +188,36 @@ export default function ScreenPlantilla ({ id }: ScreenPlantillaProps){
                 <TextInput 
                     style = {estilos.infoPrincipal}
                     value={personaje.transfondo ?? " "}
-                    onChangeText={(text)=>setPersonaje({...personaje,transfondo:text})}
+                    onChangeText={(texto)=>setPersonaje({...personaje,transfondo:texto})}
                     />
 
                 </View>
             
-            <ScrollView>
+            <ScrollView style={estilos.contenedorb}>
+                {/* se llama a la funcion para ilustar y poder editar los campos bonificacion */}
                 
-                <View>
+                <View style = {estilos.bonificacionC}>
                     
                 
                     {bonos()}
                     
+                </View>
+                {/*plantillaC donde esta clase de armadura e iniciativa */}
+                <View style={estilos.plantilaC}>
+                    {infoP()}
+                    
                     
                 </View>
-            </ScrollView>
+                {/*armas----------------------------------------------------*/}
+                <View style={estilos.armasC}>
+                    {armas()}
+                    <TouchableOpacity style={estilos.botonguardar} onPress={agregarArma}>
+                    <Text>agregar arma</Text>
+                    </TouchableOpacity>
+                    
+                </View>
+                           
+                </ScrollView>
             {/* Botón inferior para guardar */}
                 <View style={estilos.footer}>
                     <TouchableOpacity style={estilos.botonguardar} onPress={actualizar}>
@@ -110,6 +231,12 @@ export default function ScreenPlantilla ({ id }: ScreenPlantillaProps){
 
 
 const estilos = StyleSheet.create({
+    contenedorb:{
+        flex:1
+    },
+    contenedorG:{
+        flex: 1,
+    },
     box: {
         flex: 1, 
         justifyContent: 'center', 
@@ -128,9 +255,29 @@ const estilos = StyleSheet.create({
         
 
     },
+    bonificacionC:{
+        backgroundColor: '#c6baba'
+    },
+    
+    infoPlantilla:{backgroundColor: '#d0c1c1', padding: 16, borderRadius: 8, alignItems: 'center'
+
+    },
+    plantilaC:{
+        backgroundColor:'#d3c5c5'
+    },
+    armasC:{
+        backgroundColor:'#d3c5c5'
+    },
     footer:{ padding: 16, backgroundColor: '#fff' 
 
     },
-    botonguardar:{backgroundColor: '#800000', padding: 16, borderRadius: 8, alignItems: 'center'}
+    botonguardar:{backgroundColor: '#800000', padding: 16, borderRadius: 8, alignItems: 'center'},
+
+    contenedorArmas:{
+        backgroundColor:'#978c8c',borderRadius: 8, padding:16
+    },
+    infoArma:{
+        backgroundColor:'#d2c9c9',borderRadius: 8
+    }
     
 });
