@@ -2,6 +2,7 @@
 import { create } from 'zustand';
 import { DNDBonificadores, DNDPlantilla, personajeDND,Armas } from '../hooks/tipos'; // Importamos tu interfaz
 import ScreenPlantilla from '@/components/ScrenPlantilla';
+import { guardarValor, guardarArmas, cargarPersonajes, eliminarPersonajeDB } from '../db/database';
 
 // Definimos qué datos y qué funciones va a tener nuestro Store
 interface PersonajesState {
@@ -9,7 +10,7 @@ interface PersonajesState {
   crearPersonaje: (nombre: string, clase: string, raza: string) => void;
   eliminarPersonaje: (id: string) => void;
   actualizarPersonaje: (personajeActualizado: personajeDND) => void;
-  
+  cargarDesdeDB: () => void;   
 }
 
 export const BonificadoresIniciales: DNDBonificadores={
@@ -57,46 +58,46 @@ export const infoDND: DNDPlantilla={
     PuntosGolpeTemp:0
     
 }
+
 export const usePersonajesStore = create<PersonajesState>((set) => ({
-  // 1. Estado inicial: empezamos con dos personajes de prueba
-  personajes: [
-    { id: '1', nombre: 'Grog', clase: 'Bárbaro', raza: 'Goliath', nivel: 1, bonificadores: BonificadoresIniciales, plantilla: infoDND, armas: [] },
-    { id: '2', nombre: 'Jester', clase: 'Clérigo', raza: 'Tiefling', nivel: 3, bonificadores: BonificadoresIniciales, plantilla: infoDND, armas: [] },
-  ],
-  
-  // 2. Función para crear uno nuevo
+  personajes: [], // ya no arrancamos con datos de prueba, se cargan desde SQLite
+
+  cargarDesdeDB: () => {
+    const personajesGuardados = cargarPersonajes();
+    set({ personajes: personajesGuardados });
+  },
+
   crearPersonaje: (nombre, clase, raza) => set((state) => {
-    
     const nuevo: personajeDND = {
-      id: Date.now().toString(), // Genera un ID único usando el tiempo actual
+      id: Date.now().toString(),
       nombre,
       clase,
       raza,
-      nivel: 1, // Todos empiezan en nivel 1 por defecto
+      nivel: 1,
       bonificadores: BonificadoresIniciales,
       plantilla: infoDND,
       armas: [],
-
-      
     };
 
-    
-    return { personajes: [...state.personajes, nuevo] }; // Agrega el nuevo a la lista existente
+    guardarValor(nuevo);
+    guardarArmas(nuevo);
+
+    return { personajes: [...state.personajes, nuevo] };
   }),
-  
-  
 
-  actualizarPersonaje: (personajeActualizado) =>
-  set((state) => ({
-    personajes: state.personajes.map((p) =>
-      p.id === personajeActualizado.id ? personajeActualizado : p
-    ),
-  })),
-  // 3. Función para eliminar
-  eliminarPersonaje: (id) => set((state) => ({
-    personajes: state.personajes.filter((p) => p.id !== id), // Filtra y quita el del ID indicado
-  })),
+  actualizarPersonaje: (personajeActualizado) => set((state) => {
+    guardarValor(personajeActualizado);
+    guardarArmas(personajeActualizado);
 
-  
-  
+    return {
+      personajes: state.personajes.map((p) =>
+        p.id === personajeActualizado.id ? personajeActualizado : p
+      ),
+    };
+  }),
+
+  eliminarPersonaje: (id) => set((state) => {
+    eliminarPersonajeDB(id);
+    return { personajes: state.personajes.filter((p) => p.id !== id) };
+  }),
 }));

@@ -58,6 +58,7 @@ export interface DNDPlantilla{
 }
 
 export interface Armas{
+    id?:string;
     NombreArma?:string;
     Bonificador?:number;
     Daño?:string;
