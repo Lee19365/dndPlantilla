@@ -1,9 +1,31 @@
 :root {
-  --font-display:
-    Spline Sans, Inter, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji,
-    Segoe UI Symbol, Noto Color Emoji;
-  --font-mono:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+  --font-size: 16px;
+  --background: #f0e6c8;
+  --foreground: #1a0e07;
+  --card: #e8d9b0;
+  --card-foreground: #1a0e07;
+  --popover: #e8d9b0;
+  --popover-foreground: #1a0e07;
+  --primary: #1a0e07;
+  --primary-foreground: #f0e6c8;
+  --secondary: #d4be96;
+  --secondary-foreground: #1a0e07;
+  --muted: #c9a87a;
+  --muted-foreground: #6b4c2a;
+  --accent: #7a1e2e;
+  --accent-foreground: #f8f0e0;
+  --destructive: #c0392b;
+  --destructive-foreground: #f8f0e0;
+  --border: rgba(110, 72, 30, 0.3);
+  --input: transparent;
+  --input-background: #e8d9b0;
+  --switch-background: #c9a87a;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+
+  /* Font stacks (kept from previous setup) */
+  --font-display: Spline Sans, Inter, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
   --font-rounded: 'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif;
   --font-serif: Georgia, 'Times New Roman', serif;
 }

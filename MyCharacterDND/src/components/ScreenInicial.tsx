@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePersonajesStore } from "@/store/personajeStore";
 import { router, useRouter } from 'expo-router';
+import { Colors } from '@/constants/theme';
 
 export default function PersonajeScreen(){
 
@@ -64,7 +65,7 @@ export default function PersonajeScreen(){
       {/* Botón inferior para añadir (por ahora de prueba) */}
       <View style={estilos.footer}>
         <TouchableOpacity style={estilos.botonAñadir} onPress={CrearPrueba}>
-          <Text style={estilos.botonAñadirTexto}>+ Crear Personaje de Prueba</Text>
+          <Text style={estilos.botonAñadirTexto}>+ Nuevo Personaje</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -73,29 +74,29 @@ export default function PersonajeScreen(){
 }
 
 const estilos = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
-  header: { padding: 20, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#eee' },
-  titulo: { fontSize: 24, fontWeight: 'bold', color: '#111' },
-  subtitulo: { fontSize: 14, color: '#666', marginTop: 4 },
+  container: { flex: 1, backgroundColor: Colors.light.background },
+  header: { padding: 20, backgroundColor: Colors.light.backgroundElement, borderBottomWidth: 1, borderBottomColor: Colors.light.border },
+  titulo: { fontSize: 24, fontWeight: 'bold', color: Colors.light.primary },
+  subtitulo: { fontSize: 14, color: Colors.light.textSecondary, marginTop: 4 },
   lista: { padding: 16, gap: 12 },
   tarjeta: { 
-    backgroundColor: '#fff', 
+  backgroundColor: Colors.light.backgroundElement, 
     padding: 16, 
     borderRadius: 8, 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
     alignItems: 'center',
-    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2, elevation: 2
+  shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 2, elevation: 2
   },
-  nombrePersonaje: { fontSize: 18, fontWeight: 'bold', color: '#800000' }, // Color vino tipo D&D
+  nombrePersonaje: { fontSize: 18, fontWeight: '600', color: Colors.light.accent },
   detallesPersonaje: { fontSize: 14, color: '#555', marginTop: 2 },
   botonBorrar: { padding: 8 },
   botonBorrarTexto: { fontSize: 18 },
   vacioContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 100 },
   vacioTexto: { fontSize: 16, color: '#888' },
-  footer: { padding: 16, backgroundColor: '#fff' },
-  botonAñadir: { backgroundColor: '#800000', padding: 16, borderRadius: 8, alignItems: 'center' },
-  botonAñadirTexto: { color: '#fff', fontSize: 16, fontWeight: 'bold' }
+  footer: { padding: 16, backgroundColor: Colors.light.backgroundElement },
+  botonAñadir: { backgroundColor: Colors.light.primary, padding: 16, borderRadius: 8, alignItems: 'center' },
+  botonAñadirTexto: { color: Colors.light.primaryForeground, fontSize: 16, fontWeight: '700' }
 });
 
 
